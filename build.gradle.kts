@@ -32,18 +32,43 @@ kotlin {
     jvmToolchain(targetJavaVersion)
 }
 
+tasks {
+    register("deployAndReload", Copy::class) {
+        dependsOn("shadowJar")
+
+        //val serverDir = File(System.getenv("SERVER_PATH") ?: error("SERVER_PATH не установлен!"))
+        //val pluginsDir = File(serverDir, "plugins")
+
+        from(shadowJar.get().archiveFile)
+        into("server/plugins")
+
+        doLast {
+            exec {
+                commandLine(
+                    "docker", "exec", "local-server",
+                    "rcon-cli", "reload", "confirm"
+                )
+            }
+            println("Плагин обновлен. Сервер перезагружен через RCON")
+        }
+    }
+}
+
+tasks.named("build") {
+    dependsOn("shadowJar")
+    finalizedBy("deployAndReload")
+}
+
 tasks.shadowJar {
     archiveClassifier = ""
     archiveFileName.set("${project.name}.jar")
 
-    val serverPath = System.getenv("SERVER_PATH")
-    if (System.getenv("TESTING") != null) {
-        if (serverPath != null) {
-            destinationDirectory.set(file("$serverPath\\plugins"))
-        } else {
-            logger.warn("SERVER_PATH property is not set!")
-        }
-    }
+    //minimize()
+    //configurations = listOf(project.configurations.runtimeClasspath.get())
+
+    //relocate("kotlin", "ru.joutak.shadow.kotlin") {
+    //    exclude("kotlin.Metadata")
+    //}
 }
 
 tasks.jar {

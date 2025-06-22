@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  mc-server:
+    image: itzg/minecraft-server:java21
+    container_name: local-server
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      VERSION: "1.21.4"
+      TYPE: "PAPER"
+      ONLINE_MODE: "FALSE"
+      RCON_PASSWORD: "minecraft"
+      MODE: "creative"
+      ENABLE_RCON: "true"
+      KOTLIN: "true"
+      PLUGINS_FOLDER: "/plugins"
+    volumes:
+      - ./server-data:/data
+      - ./plugins:/plugins
+    restart: unless-stopped

@@ -1,5 +1,6 @@
-name: '$pluginName'
+name: BlockHandler
 version: '$version'
-main: ru.joutak.template.EmptyPlugin
+main: ru.joutak.blockHandler.BlockHandler
 api-version: '1.21.4'
-depend: [ 'KotlinPlugins' ] # don't remove KotlinPlugin dependency
+depend: [ 'Kotlin' ]
+#depend: [ 'KotlinPlugins' ] # don't remove KotlinPlugin dependency
